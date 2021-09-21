@@ -1,0 +1,14 @@
+version: "3.3"
+
+services: 
+  web: 
+    image: penguinbutter/ytrd-web:latest
+    ports: 
+      - "3000:3000"
+
+  gql: 
+    image: penguinbutter/ytrd-gql:latest
+    ports: 
+      - "4000:4000"
+    volumes: 
+      - ${PWD}/config.json:/app/config.json
