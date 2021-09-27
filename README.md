@@ -9,11 +9,11 @@ You need to populate this json file with the following:
 
 ```
 {
-    "api_key": "AIzaS3jlaJ8Vz_syDfIESrkDnDy2Kllt_i2YDwg"
+    "api_key": "YOUR_API_KEY_HERE"
 }
 ```
 
-Replacing the key between the quotes with your own.
+Replacing YOUR_API_KEY_HERE between the quotes with your own.
 
 # Running
 
