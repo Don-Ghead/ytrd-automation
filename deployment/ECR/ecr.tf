@@ -1,5 +1,6 @@
 provider "aws" {
   alias   = "ecr_public_repos"
+  # For pushing to public ECR repos the region must always be us-east-1
   region  = "us-east-1"
   profile = "donghead"
 }
