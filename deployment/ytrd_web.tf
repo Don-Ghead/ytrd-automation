@@ -1,3 +1,11 @@
+# resource "aws_eip" "graphql_ip" {
+  
+# }
+
+resource "aws_cloudwatch_log_group" "ytrd_main_logs" {
+  name = "ytrd_logs"
+  retention_in_days = 1
+}
 
 resource "aws_ecs_cluster" "ytrd_cluster" {
   name = "ytrd_cluster"
@@ -15,18 +23,32 @@ resource "aws_ecs_task_definition" "ytrd_web_task" {
   cpu    = 256
 
   execution_role_arn = aws_iam_role.ecs_role.arn
-
+  
   container_definitions = jsonencode([
     {
-      name: "ytrd_web_container"
-      image: "public.ecr.aws/i3k0c8g9/ytrd-web-dev:latest"
+      name : "ytrd_web_container"
+      image : "public.ecr.aws/i3k0c8g9/ytrd-web-dev:latest"
+      essential : true
       memory: 512
-      essential: true
-      portMappings: [
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          awslogs-group : aws_cloudwatch_log_group.ytrd_main_logs.name,
+          awslogs-region : var.aws_region,
+          awslogs-stream-prefix : "ytrd-web"
+        }
+      },
+      portMappings : [
         {
           "containerPort" : 3000,
           "hostPort" : 3000
         }
+      ]
+      environment : [
+        {
+          name : "REACT_APP_GQL_HOST"
+          value : "localhost"
+        },
       ]
     },
   ])
@@ -38,11 +60,15 @@ resource "aws_ecs_service" "ytrd_web_service" {
   cluster         = aws_ecs_cluster.ytrd_cluster.id
   task_definition = aws_ecs_task_definition.ytrd_web_task.arn
 
+  depends_on = [
+    aws_internet_gateway.ytrd_default_igw
+  ]
+
   launch_type   = "FARGATE"
   desired_count = 1
 
   network_configuration {
-    subnets          = [aws_subnet.ytrd_public_a.id]
+    subnets          = [aws_subnet.ytrd_public_a.id, aws_subnet.ytrd_public_b.id]
     security_groups  = [aws_security_group.ytrd_secgroup.id]
     assign_public_ip = true
   }
