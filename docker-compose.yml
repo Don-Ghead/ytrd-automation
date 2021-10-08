@@ -15,4 +15,4 @@ services:
     volumes: 
       - ${PWD}/config.json:/app/config.json
     environment: 
-      - GCP_API_KEY=AIzaSyDKhJ8Vz_syDfIES9948Gy2Kllt_i2YDwg
+      - GCP_API_KEY=INSERT_API_HERE
