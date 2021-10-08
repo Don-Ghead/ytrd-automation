@@ -38,15 +38,15 @@ resource "aws_security_group" "ytrd_secgroup" {
 
   # Todo - needs to be secured 
   ingress {
-    from_port   = 3000
-    to_port     = 3000
+    from_port   = var.web_port
+    to_port     = var.web_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port   = 4000
-    to_port     = 4000
+    from_port   = var.gql_port
+    to_port     = var.gql_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

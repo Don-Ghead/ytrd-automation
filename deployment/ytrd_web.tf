@@ -1,9 +1,10 @@
-# resource "aws_eip" "graphql_ip" {
-  
-# }
+variable "web_port" {
+  default     = 3000
+  description = "The (development) port associated with the web service"
+}
 
 resource "aws_cloudwatch_log_group" "ytrd_main_logs" {
-  name = "ytrd_logs"
+  name              = "ytrd_logs"
   retention_in_days = 1
 }
 
@@ -23,13 +24,13 @@ resource "aws_ecs_task_definition" "ytrd_web_task" {
   cpu    = 256
 
   execution_role_arn = aws_iam_role.ecs_role.arn
-  
+
   container_definitions = jsonencode([
     {
       name : "ytrd_web_container"
       image : "public.ecr.aws/i3k0c8g9/ytrd-web-dev:latest"
       essential : true
-      memory: 512
+      memory : 512
       logConfiguration : {
         logDriver : "awslogs",
         options : {
@@ -40,14 +41,14 @@ resource "aws_ecs_task_definition" "ytrd_web_task" {
       },
       portMappings : [
         {
-          "containerPort" : 3000,
-          "hostPort" : 3000
+          "containerPort" : var.web_port,
+          "hostPort" : var.web_port
         }
       ]
       environment : [
         {
           name : "REACT_APP_GQL_HOST"
-          value : "localhost"
+          value : aws_lb.ytrd_alb.dns_name
         },
       ]
     },
@@ -71,5 +72,11 @@ resource "aws_ecs_service" "ytrd_web_service" {
     subnets          = [aws_subnet.ytrd_public_a.id, aws_subnet.ytrd_public_b.id]
     security_groups  = [aws_security_group.ytrd_secgroup.id]
     assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.alb_web_tg.arn
+    container_name   = "ytrd_web_container"
+    container_port   = var.web_port
   }
 }

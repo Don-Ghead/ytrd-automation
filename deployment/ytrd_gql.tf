@@ -1,3 +1,8 @@
+variable "gql_port" {
+  default     = 4000
+  description = "The (development) port associated with the graphql API service"
+}
+
 resource "aws_ecs_task_definition" "ytrd_gql_api_task" {
   family = "ytrd_gql_task"
 
@@ -14,7 +19,7 @@ resource "aws_ecs_task_definition" "ytrd_gql_api_task" {
       name : "ytrd_gql_container"
       image : "public.ecr.aws/i3k0c8g9/ytrd-gql-dev:latest"
       essential : true
-      memory: 512
+      memory : 512
       logConfiguration : {
         logDriver : "awslogs",
         options : {
@@ -25,8 +30,8 @@ resource "aws_ecs_task_definition" "ytrd_gql_api_task" {
       },
       portMappings : [
         {
-          "containerPort" : 4000
-          "hostPort" : 4000
+          "containerPort" : var.gql_port
+          "hostPort" : var.gql_port
         }
       ]
       environment : [
@@ -57,5 +62,11 @@ resource "aws_ecs_service" "ytrd_gql_service" {
     subnets          = [aws_subnet.ytrd_public_a.id, aws_subnet.ytrd_public_b.id]
     security_groups  = [aws_security_group.ytrd_secgroup.id]
     assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.alb_gql_tg.arn
+    container_name   = "ytrd_gql_container"
+    container_port   = var.gql_port
   }
 }
