@@ -7,23 +7,20 @@ For now it will contain all infrastructure/automation related code for youtube r
 
 To run this Application locally you can use the docker-compose file to build both the React App & GraphQL API.
 
-For the GraphQL API to work we need to provide it an API key for Google Cloud. 
-The docker-compose file will try to mount a file called config.json in the base directory. 
-You need to populate this json file with the following: 
+When you run the docker compose command below it looks for a file called `.env.dev` in the config directory.
+Within this file are two environment variables the containers need to run:
 
-```
-{
-    "api_key": "YOUR_API_KEY_HERE"
-}
-```
+- GCP_API_KEY is your google cloud api key GraphQL needs to access the youtube API
+- REACT_APP_GQL_HOST is a react-app environment variable that instructs react where to point the graphql client. By default this value uses localhost assuming you are running everything on the same machine.
 
-Replacing YOUR_API_KEY_HERE between the quotes with your own.
+For safety reasons it is suggested to make a copy of the env file, changing the dev ending to your own name e.g. `.env.lukep` and then passing that file through to docker-compose instead. There is a gitignore rule to exclude all but .env.dev, that way you don't end up accidentally committing your API key.
+You need to replace YOUR_API_KEY_HERE in the .env file with your own.
 
 ## Running
 
 Then simply run
 ```
-docker-compose up
+docker-compose up --env-file ./config/.env.dev up
 ```
 and you should be able to navigate to localhost:3000 and view the Youtube Rundown UI.
 

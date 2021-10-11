@@ -6,7 +6,7 @@ services:
     ports: 
       - "3000:3000"
     environment:
-      - REACT_APP_GQL_HOST=0.0.0.0
+      - REACT_APP_GQL_HOST
 
   gql: 
     image: public.ecr.aws/i3k0c8g9/ytrd-gql-dev:latest
@@ -15,4 +15,4 @@ services:
     volumes: 
       - ${PWD}/config.json:/app/config.json
     environment: 
-      - GCP_API_KEY=INSERT_API_HERE
+      - GCP_API_KEY

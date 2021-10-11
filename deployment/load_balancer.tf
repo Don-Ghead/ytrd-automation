@@ -13,6 +13,11 @@ resource "aws_lb" "ytrd_alb" {
   # may want to configure access logs
 }
 
+# Make it easier for a dev to access the UI after deploying it
+output "ui-url" {
+  value = "http://${aws_lb.ytrd_alb.dns_name}:3000"
+}
+
 resource "aws_lb_listener" "ytrd_gql_listener" {
   load_balancer_arn = aws_lb.ytrd_alb.arn
   port              = var.gql_port

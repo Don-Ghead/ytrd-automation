@@ -1,8 +1,3 @@
-variable "gql_port" {
-  default     = 4000
-  description = "The (development) port associated with the graphql API service"
-}
-
 resource "aws_ecs_task_definition" "ytrd_gql_api_task" {
   family = "ytrd_gql_task"
 

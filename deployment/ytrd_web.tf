@@ -1,8 +1,3 @@
-variable "web_port" {
-  default     = 3000
-  description = "The (development) port associated with the web service"
-}
-
 resource "aws_cloudwatch_log_group" "ytrd_main_logs" {
   name              = "ytrd_logs"
   retention_in_days = 1
