@@ -2,6 +2,7 @@ version: "3.3"
 
 services: 
   web: 
+    network_mode: host
     image: public.ecr.aws/i3k0c8g9/ytrd-web-dev:latest
     ports: 
       - "3000:3000"
@@ -9,6 +10,7 @@ services:
       - REACT_APP_GQL_HOST
 
   gql: 
+    network_mode: host
     image: public.ecr.aws/i3k0c8g9/ytrd-gql-dev:latest
     ports: 
       - "4000:4000"
@@ -16,3 +18,4 @@ services:
       - ${PWD}/config.json:/app/config.json
     environment: 
       - GCP_API_KEY
+
